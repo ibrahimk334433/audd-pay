@@ -3,53 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AS2 | Confirm Transaction</title>
+    <title>Checkout | AUDD Direct</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         body { background: #020617; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center px-4">
-
-    <div class="max-w-md w-full glass p-10 rounded-[3rem] text-center shadow-2xl">
-        <div class="w-16 h-16 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
+    <div class="max-w-md w-full glass p-10 rounded-[3rem] text-center relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent"></div>
+        
+        <div class="w-16 h-16 bg-blue-600/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-blue-500/20">
             <span class="text-2xl">⚡</span>
         </div>
         
-        <h2 class="text-2xl font-black mb-8 tracking-tight">Checkout Summary</h2>
+        <h2 class="text-xl font-bold mb-8 tracking-tight">Payment Summary</h2>
         
-        <div class="bg-black/40 p-6 rounded-3xl mb-8 border border-white/5 text-left">
-            <label class="text-[9px] uppercase font-bold text-gray-500 tracking-widest mb-2 block">Recipient Wallet</label>
-            <p id="ui-wallet" class="text-[10px] font-mono text-blue-400 break-all leading-relaxed"></p>
-        </div>
+        <div class="space-y-6">
+            <div class="text-left bg-black/40 p-5 rounded-2xl border border-white/5">
+                <label class="text-[8px] uppercase font-bold text-gray-500 tracking-widest mb-2 block">Recipient Wallet</label>
+                <p id="display-wallet" class="text-[10px] font-mono text-blue-400 break-all"></p>
+            </div>
 
-        <div class="mb-10">
-            <label class="text-[9px] uppercase font-bold text-gray-500 tracking-widest mb-1 block">Requested Amount</label>
-            <p class="text-6xl font-black tracking-tighter"><span id="ui-amount">0.00</span> <span class="text-base text-blue-500 font-bold uppercase">AUDD</span></p>
-        </div>
+            <div class="py-4">
+                <p id="display-amount" class="text-7xl font-black tracking-tighter">0.00</p>
+                <p class="text-blue-500 font-extrabold text-xs mt-2 tracking-[0.3em]">AUDD STABLECOIN</p>
+            </div>
 
-        <button onclick="handlePhantomPayment()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl shadow-xl transition-all active:scale-95">
-            Pay with Phantom
-        </button>
+            <button onclick="connectAndPay()" class="w-full bg-white text-black font-black py-5 rounded-2xl shadow-2xl hover:bg-gray-200 transition-all active:scale-95 uppercase text-xs tracking-widest">
+                Pay with Phantom
+            </button>
+        </div>
         
-        <p class="mt-8 text-[9px] text-gray-600 uppercase font-bold tracking-widest">Secured by Solana Network</p>
+        <p class="mt-10 text-[8px] text-gray-600 uppercase font-black tracking-[0.3em]">Secured by Solana Network</p>
     </div>
 
     <script>
-        // Initialization: Extract and display data
-        window.addEventListener('DOMContentLoaded', () => {
-            const urlData = new URLSearchParams(window.location.search);
-            const merchant = urlData.get('to');
-            const cost = urlData.get('amount');
+        window.onload = function() {
+            const params = new URLSearchParams(window.location.search);
+            document.getElementById('display-wallet').innerText = params.get('to') || "No Address Found";
+            document.getElementById('display-amount').innerText = params.get('amount') || "0.00";
+        };
 
-            if (merchant) document.getElementById('ui-wallet').innerText = merchant;
-            if (cost) document.getElementById('ui-amount').innerText = cost;
-        });
+        async function connectAndPay() {
+            const isPhantomInstalled = window.solana && window.solana.isPhantom;
 
-        function handlePhantomPayment() {
-            alert("SDK Status: Integration pending. Will be active upon hosting.");
+            if (isPhantomInstalled) {
+                try {
+                    const response = await window.solana.connect();
+                    console.log('Connected:', response.publicKey.toString());
+                    alert("Success: Wallet " + response.publicKey.toString().slice(0,6) + "... is now connected.");
+                } catch (err) {
+                    alert("Error: Connection refused.");
+                }
+            } else {
+                alert("Phantom Wallet not detected. Please install the extension.");
+                window.open("https://phantom.app/", "_blank");
+            }
         }
     </script>
 </body>
