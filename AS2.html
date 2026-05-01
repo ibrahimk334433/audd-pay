@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AS2 | Confirm Transaction</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { background: #020617; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center px-4">
+
+    <div class="max-w-md w-full glass p-10 rounded-[3rem] text-center shadow-2xl">
+        <div class="w-16 h-16 bg-blue-600/20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <span class="text-2xl">⚡</span>
+        </div>
+        
+        <h2 class="text-2xl font-black mb-8 tracking-tight">Checkout Summary</h2>
+        
+        <div class="bg-black/40 p-6 rounded-3xl mb-8 border border-white/5 text-left">
+            <label class="text-[9px] uppercase font-bold text-gray-500 tracking-widest mb-2 block">Recipient Wallet</label>
+            <p id="ui-wallet" class="text-[10px] font-mono text-blue-400 break-all leading-relaxed"></p>
+        </div>
+
+        <div class="mb-10">
+            <label class="text-[9px] uppercase font-bold text-gray-500 tracking-widest mb-1 block">Requested Amount</label>
+            <p class="text-6xl font-black tracking-tighter"><span id="ui-amount">0.00</span> <span class="text-base text-blue-500 font-bold uppercase">AUDD</span></p>
+        </div>
+
+        <button onclick="handlePhantomPayment()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-5 rounded-2xl shadow-xl transition-all active:scale-95">
+            Pay with Phantom
+        </button>
+        
+        <p class="mt-8 text-[9px] text-gray-600 uppercase font-bold tracking-widest">Secured by Solana Network</p>
+    </div>
+
+    <script>
+        // Initialization: Extract and display data
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlData = new URLSearchParams(window.location.search);
+            const merchant = urlData.get('to');
+            const cost = urlData.get('amount');
+
+            if (merchant) document.getElementById('ui-wallet').innerText = merchant;
+            if (cost) document.getElementById('ui-amount').innerText = cost;
+        });
+
+        function handlePhantomPayment() {
+            alert("SDK Status: Integration pending. Will be active upon hosting.");
+        }
+    </script>
+</body>
+</html>
